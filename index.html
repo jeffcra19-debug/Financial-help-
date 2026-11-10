@@ -1,0 +1,149 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Northstar Finance</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#0b1425;color:#fff;font-family:Arial,sans-serif}
+header{background:#14233a;padding:22px;color:#e7bd65;font-size:22px;font-weight:bold}
+main{max-width:850px;margin:30px auto;padding:20px}
+.card{background:#172942;border:1px solid #34445d;border-radius:14px;padding:22px;margin:18px 0}
+h1,h2{color:#e7bd65}
+p{color:#c5cede}
+input,select,button{width:100%;padding:13px;margin:8px 0;border-radius:8px;font-size:16px}
+input,select{background:#0b1425;color:white;border:1px solid #52627a}
+button{background:#e7bd65;color:#172033;border:0;font-weight:bold}
+.hidden{display:none}
+</style>
+</head>
+<body>
+<header>NORTHSTAR FINANCE</header>
+<main>
+<section id="home">
+<h1>Welcome to Northstar Finance</h1>
+<p>Explore your educational financial dashboard.</p>
+
+<div class="card">
+<h2>Create Account</h2>
+<input id="newEmail" type="email" placeholder="Email address">
+<input id="newPass" type="password" placeholder="Password">
+<button onclick="register()">Create Account</button>
+</div>
+
+<div class="card">
+<h2>Welcome Back</h2>
+<input id="loginEmail" type="email" placeholder="Email address">
+<input id="loginPass" type="password" placeholder="Password">
+<button onclick="login()">Log In</button>
+<p id="message"></p>
+</div>
+</section>
+
+<section id="dashboard" class="hidden">
+<h1>My Dashboard</h1>
+<p>Educational sample account. All balances are fictional.</p>
+
+<div class="card">
+<p>Total Sample Balance</p>
+<h1>$70,000.00</h1>
+</div>
+
+<div class="card">
+<p>Checking Account</p>
+<h2>$55,000.00</h2>
+</div>
+
+<div class="card">
+<p>Savings Account</p>
+<h2>$15,000.00</h2>
+</div>
+
+<div class="card">
+<h2>Recent Transactions</h2>
+<p>Sample deposit — +$2,000.00</p>
+<p>Sample savings transfer — +$500.00</p>
+<p>Sample purchase — -$85.00</p>
+</div>
+
+<div class="card">
+<h2>Send Money Practice</h2>
+<p>Use fictional details only. No real transfer will happen.</p>
+<select id="method">
+<option>Chime</option>
+<option>Cash App</option>
+<option>PayPal</option>
+<option>Bitcoin</option>
+<option>Bank Transfer</option>
+</select>
+<input id="recipient" placeholder="Sample recipient">
+<input id="amount" type="number" placeholder="Amount">
+<button onclick="reviewTransfer()">Review Transfer</button>
+<p id="transferMessage"></p>
+</div>
+
+<button onclick="logout()">Log Out</button>
+</section>
+</main>
+
+<script>
+function register(){
+let email=document.getElementById('newEmail').value.trim();
+let pass=document.getElementById('newPass').value;
+if(!email||pass.length<6){
+alert('Enter your email and a password of at least 6 characters.');
+return;
+}
+let users=JSON.parse(localStorage.getItem('northstarUsers')||'{}');
+if(users[email]){
+alert('Account already exists. Please log in.');
+return;
+}
+users[email]=pass;
+localStorage.setItem('northstarUsers',JSON.stringify(users));
+sessionStorage.setItem('northstarLogin',email);
+showDashboard();
+}
+
+function login(){
+let email=document.getElementById('loginEmail').value.trim();
+let pass=document.getElementById('loginPass').value;
+let users=JSON.parse(localStorage.getItem('northstarUsers')||'{}');
+if(users[email]!==pass){
+document.getElementById('message').textContent='Login details not recognised on this device.';
+return;
+}
+sessionStorage.setItem('northstarLogin',email);
+showDashboard();
+}
+
+function showDashboard(){
+document.getElementById('home').classList.add('hidden');
+document.getElementById('dashboard').classList.remove('hidden');
+}
+
+function logout(){
+sessionStorage.removeItem('northstarLogin');
+document.getElementById('dashboard').classList.add('hidden');
+document.getElementById('home').classList.remove('hidden');
+}
+
+function reviewTransfer(){
+let recipient=document.getElementById('recipient').value;
+let amount=Number(document.getElementById('amount').value);
+let method=document.getElementById('method').value;
+if(!recipient||amount<=0){
+alert('Enter sample recipient details and an amount.');
+return;
+}
+document.getElementById('transferMessage').textContent=
+'Practice review: '+method+' to '+recipient+
+' for $'+amount.toFixed(2)+'. No money was sent. Fee: $0.00.';
+}
+
+if(sessionStorage.getItem('northstarLogin'))showDashboard();
+</script>
+</body>
+</html>
